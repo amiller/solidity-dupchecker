@@ -1,66 +1,43 @@
-## Foundry
+## No Duplicates
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+What's the best way to check that an `address[] memory` (an array of addresses) contains no duplicates?
 
-Foundry consists of:
+Expand on possible motivation like checking if a graph cycle is simple. Want to be able to handle long ones.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+### Mappings aren't available in Solidity memory
+The first approach is to try to use a `mapping` temporary variable. But this approach does not work.
 
-## Documentation
+It's possible to use storage, but that is actually expensive. It's also inconvenient, because we'd like to be able to easily use a "read contract" API like we can with ordinary view functions.
 
-https://book.getfoundry.sh/
+### Sorting the list is slow
+
+The first main insight, and an important general lesson about smart contracts, is to think of verifying rather than computing.
+
+We can take in a permutation as advice, which shows how to permute the array into sorted order. We can easily scan the permutation to check it's in sorted order.
+
+### Taking advice is inconvenient
+
+Also call data is expensive
+
+### Trying to use large memory isn't great
+
+Solidity expands memory, so we can't just pretend we have a large uninitialized memory as a kind of cheater's mapping. 
+
+### Using a bloom filter
+
+One parameter is whether we can assume the addresses are high entropy or not.
+
+If so we can just use.
+
+Because we are just verifying 
+
+Need to make a cool bloom filter in Solidity?
+
+
 
 ## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
+https://book.getfoundry.sh/
 
 ```shell
 $ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
 ```
