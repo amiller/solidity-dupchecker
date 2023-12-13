@@ -19,12 +19,11 @@ contract DupCheckersTest is Test {
     pure returns (address[] memory addresses) {
         addresses = new address[](count);
         for (uint i = 0; i < count; i++)
-            //addresses[i] = address(uint160(uint(keccak256(abi.encodePacked(i)))));
 	    addresses[i] = address(uint160(i));
     }
 
     function testSort() view public {
-        address[] memory addresses = generateAddresses(10);
+        address[] memory addresses = generateAddresses(100);
         uint[] memory permutation = checker.getPermutation(addresses);
         for (uint i = 1; i < addresses.length; i++) {
             require(addresses[permutation[i-1]] <= addresses[permutation[i]],

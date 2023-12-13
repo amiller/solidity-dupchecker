@@ -9,7 +9,7 @@ import {NoDuplicates} from "../src/NoDuplicates.sol";
 contract NoDuplicatesTest is Test {
     NoDuplicates checker;
 
-        function generateAddresses(uint count) internal
+    function generateAddresses(uint count) internal
     pure returns (address[] memory addresses) {
         addresses = new address[](count);
         for (uint i = 0; i < count; i++) addresses[i] = address(uint160(i));
@@ -20,10 +20,12 @@ contract NoDuplicatesTest is Test {
     }
 
     function testRange() view public {
-	address[] memory addresses = generateAddresses(10);
+	address[] memory addresses = generateAddresses(10000);
 	uint startGas;
 	startGas = gasleft();
 	require(checker.noDuplicates(addresses, bytes32("0")));
+	console.log("Number of elements:");
+	console.logUint(addresses.length);
 	console.log("No Duplicates cost:");
 	console.logUint(startGas - gasleft());
     }

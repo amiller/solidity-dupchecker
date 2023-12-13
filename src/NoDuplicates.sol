@@ -13,13 +13,13 @@ contract NoDuplicates {
 			  uint n_hashes, uint factor)
     public pure returns (bool) {
         uint size = factor * addresses.length;
+        uint segmentSize = 256 / n_hashes; // Divide the hash into segments
         uint numWords = (size + 255) / 256; // Number of 256-bit words
         bytes32[] memory bloomFilter = new bytes32[](numWords);
         for (uint i = 0; i < addresses.length; i++) {
             bytes32 hash = keccak256(abi.encodePacked(salt, addresses[i]));
             bool anyDiff = false;
             for (uint8 j = 0; j < n_hashes; j++) {
-                uint segmentSize = 256 / n_hashes; // Divide the hash into segments
                 uint shiftBits = j * segmentSize;
                 uint idx = uint(uint256(hash) >> shiftBits) % size;
                 uint wordIndex = idx / 256;
@@ -33,6 +33,5 @@ contract NoDuplicates {
             if (!anyDiff) return false;
         }
         return true;
-    }
- 
+    } 
 }
